@@ -3,11 +3,11 @@
 ## Compile
 
 ```sh
-ghc -o foo foo.hs
+ghc -o Day01Part01 Day01Part01.hs
 ```
 
 ## Run
 
 ```sh
-cat foo.input | ./foo > foo.output
+cat Day01Part01.input | ./Day01Part01 > Day01Part01.output
 ```
