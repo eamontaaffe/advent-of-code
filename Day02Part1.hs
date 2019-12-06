@@ -1,37 +1,35 @@
+import Data.List ( intercalate )
 import Data.List.Split ( splitOn )
+import Debug.Trace ( trace )
 
 
 main :: IO ()
 main = interact $
-  show . compile . map read . splitOn ","
+  intercalate "," . map show . compile 0 . map read . splitOn ","
 
 
-replace :: Int -> a -> [a] -> [a]
-replace index newVal xs =
-  ys ++ [newVal] ++ zs
+compile :: Int -> [Int] -> [Int]
+compile index xs
+  -- HALT
+  | opcode == 99 = xs
+
+  -- OPERATION
+  | otherwise = compile (index + 4) (replace position total xs)
   where
-    (ys, _:zs) = splitAt index xs
+    (opcode:_) = drop index xs
+    (_:read1:read2:position:_) = drop index xs
 
-
-compile :: [Int] -> [Int]
-
--- HALT
-compile (99:_) = [99]
-
--- ADD
-compile xs@(1:read1:read2:position:_) =
-  take 4 ys ++ compile (drop 4 ys)
-  where
     value1 = xs !! read1
     value2 = xs !! read2
-    total = value1 + value2
-    ys = replace position total xs
 
--- -- MULTIPLY
-compile xs@(2:read1:read2:position:_) =
-  take 4 ys ++ compile (drop 4 ys)
-  where
-    value1 = xs !! read1
-    value2 = xs !! read2
-    total = value1 * value2
-    ys = replace position total xs
+    total = (operator opcode) value1 value2
+
+    operator :: Int -> (Int -> Int -> Int)
+    operator 1 = (+)
+    operator 2 = (*)
+
+    replace :: Int -> a -> [a] -> [a]
+    replace index newVal xs =
+      ys ++ [newVal] ++ zs
+      where
+        (ys, _:zs) = splitAt index xs
