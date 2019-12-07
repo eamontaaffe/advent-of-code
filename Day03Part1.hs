@@ -85,6 +85,7 @@ locationToDistance :: Location -> Int
 locationToDistance (x, y) =
   abs x + abs y
 
+
 main :: IO ()
 main
   = interact
@@ -94,8 +95,5 @@ main
   . filter ((/=) 0)
   . map locationToDistance
   . foldl1 intersect
-  . map ( pathToDots
-        . map traceShowId
-        . pathFinder [(0, 0)]
-        )
+  . map ( pathToDots . pathFinder [(0, 0)] )
   . parseInput
