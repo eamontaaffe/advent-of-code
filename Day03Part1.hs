@@ -94,5 +94,8 @@ main
   . filter ((/=) 0)
   . map locationToDistance
   . foldl1 intersect
-  . map (pathToDots . pathFinder [(0, 0)])
+  . map ( pathToDots
+        . map traceShowId
+        . pathFinder [(0, 0)]
+        )
   . parseInput
